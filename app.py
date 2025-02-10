@@ -5,9 +5,9 @@ import pickle
 # Cargar los modelos
 @st.cache_resource
 def load_models():
-    with open("dt-energy-consumption-model.pck", "rb") as f:
+    with open("models/dt-energy-consumption-model.pck", "rb") as f:
         dt_model = pickle.load(f)
-    with open("svm-energy-consumption-model.pck", "rb") as f:
+    with open("models/svm-energy-consumption-model.pck", "rb") as f:
         svm_model = pickle.load(f)
     return dt_model, svm_model
 
