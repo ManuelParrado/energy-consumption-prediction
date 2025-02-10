@@ -31,3 +31,9 @@ This dataset allows for the construction of a **regression model** to predict en
 - **Model serialization** for reuse in multiple environments.
 - **Flask API creation** to make predictions via HTTP requests.
 - **Streamlit graphical interface** to input data and visualize predictions.
+
+## **Try the Model Online**
+🔗 **Test the model in a live Streamlit application:**  
+👉 [Energy Consumption Prediction - Streamlit](https://energy-consumption-prediction-teftw3zdrbwfadnf63jfxb.streamlit.app/)
+
+This interactive Streamlit app allows users to input building and environmental parameters and obtain energy consumption predictions using the trained **Decision Tree (DT)** and **Support Vector Machine (SVM)** models.
