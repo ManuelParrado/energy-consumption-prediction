@@ -5,10 +5,10 @@ import pandas as pd
 from sklearn.feature_extraction import DictVectorizer
 
 with open("models/svm-energy-consumption-model.pck", "rb") as f:
-    dv, svm-model = pickle.load(f)
+    dv, svm_model = pickle.load(f)
 
 with open("models/dt-energy-consumption-model.pck", "rb") as f:
-    dv, dt-model = pickle.load(f)
+    dv, dt_model = pickle.load(f)
 
 # Título de la aplicación
 st.title("Predicción de Consumo de Energía")
@@ -46,8 +46,8 @@ if st.button("Predecir"):
     # Transformar los datos del usuario usando DictVectorizer
     X_input = dv.transform([input_data])
     
-    svm_prediction = svm-model.predict(X_input)
-    dt_prediction = dt-model.predict(X_input)
+    svm_prediction = svm_model.predict(X_input)
+    dt_prediction = dt_model.predict(X_input)
 
     # Mostrar resultado
     st.subheader("Resultados de Predicción:")
