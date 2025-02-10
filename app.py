@@ -1,6 +1,12 @@
 import streamlit as st
 import pickle
-import os
+import pandas as pd
+import numpy as np
+from sklearn.feature_extraction import DictVectorizer
+
+# Cargar el modelo y el DictVectorizer
+with open('churn-model.pck', 'rb') as f:
+    dv, model = pickle.load(f)
 
 # Cargar los modelos
 @st.cache_resource
