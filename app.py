@@ -1,13 +1,14 @@
 import streamlit as st
 import pickle
 import numpy as np
+from sklearn.feature_extraction import DictVectorizer
 
-# Cargar los modelos
+# Cargar el modelo, junto con DictVectorizer
 with open("models/dt-energy-consumption-model.pck", "rb") as f:
-    dt_model = pickle.load(f)
+    dv, dt_model = pickle.load(f)
 
 with open("models/svm-energy-consumption-model.pck", "rb") as f:
-    svm_model = pickle.load(f)
+    _, svm_model = pickle.load(f)  # No cargamos dv nuevamente
 
 # Título de la aplicación
 st.title("Predicción de Consumo de Energía")
@@ -35,15 +36,15 @@ if st.button("Predecir"):
         "Humidity": humidity,
         "SquareFootage": square_footage,
         "Occupancy": occupancy,
-        "HVACUsage": 1 if hvac_usage == "On" else 0,
-        "LightingUsage": 1 if lighting_usage == "On" else 0,
+        "HVACUsage": hvac_usage,
+        "LightingUsage": lighting_usage,
         "RenewableEnergy": renewable_energy,
-        "DayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"].index(day_of_week),
-        "Holiday": 1 if holiday == "Yes" else 0
+        "DayOfWeek": day_of_week,
+        "Holiday": holiday
     }
 
-    # Convertir el diccionario en una matriz numpy para los modelos
-    X_input = np.array([list(input_data.values())])
+    # Transformar los datos del usuario usando DictVectorizer
+    X_input = dv.transform([input_data])
 
     # Realizar predicciones
     dt_prediction = dt_model.predict(X_input)[0]
