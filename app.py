@@ -1,12 +1,6 @@
 import streamlit as st
 import pickle
-import pandas as pd
-import numpy as np
-from sklearn.feature_extraction import DictVectorizer
-
-# Cargar el modelo y el DictVectorizer
-with open('churn-model.pck', 'rb') as f:
-    dv, model = pickle.load(f)
+import os
 
 # Cargar los modelos
 @st.cache_resource
@@ -30,28 +24,41 @@ def load_models():
 
 dt_model, svm_model = load_models()
 
-# Mostrar la aplicación
+# Título de la aplicación
 st.title("Predicción de Consumo de Energía")
 st.write("Este aplicativo permite comparar las predicciones de modelos SVM y Decision Tree.")
 
 # Formulario de entrada manual
-st.write("### Ingresa los datos de entrada para la predicción")
-input_data = []
+st.header("Introduce los datos para la predicción:")
 
-fields = ["Temperature", "Humidity", "SquareFootage", "Occupancy", "HVACUsage", "LightingUsage", "RenewableEnergy", "DayOfWeek", "Holiday"]
-for col in fields:
-    value = st.number_input(f"{col}", value=0.0)
-    input_data.append(value)
-input_data = [input_data]
+temperature = st.number_input("Temperatura (°C)", min_value=-50.0, max_value=50.0, step=0.1)
+humidity = st.number_input("Humedad (%)", min_value=0, max_value=100, step=1)
+square_footage = st.number_input("Metros cuadrados", min_value=10, max_value=10000, step=10)
+occupancy = st.number_input("Número de ocupantes", min_value=0, max_value=100, step=1)
+hvac_usage = st.selectbox("Uso de HVAC", ["Off", "On"])
+lighting_usage = st.selectbox("Uso de iluminación", ["Off", "On"])
+renewable_energy = st.number_input("Energía renovable (kWh)", min_value=0, max_value=10000, step=10)
+day_of_week = st.selectbox("Día de la semana", ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"])
+holiday = st.selectbox("¿Es día festivo?", ["No", "Yes"])
 
-# Predicción con los modelos
-if dt_model is not None and svm_model is not None:
-    if st.button("Predecir"):
+# Convertir valores categóricos a numéricos
+hvac_usage_val = 1 if hvac_usage == "On" else 0
+lighting_usage_val = 1 if lighting_usage == "On" else 0
+holiday_val = 1 if holiday == "Yes" else 0
+day_of_week_val = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"].index(day_of_week)
+
+# Crear lista de entrada para el modelo
+input_data = [[temperature, humidity, square_footage, occupancy, hvac_usage_val, lighting_usage_val, renewable_energy, day_of_week_val, holiday_val]]
+
+# Botón de predicción
+if st.button("Predecir"):
+    if dt_model is not None and svm_model is not None:
         dt_prediction = dt_model.predict(input_data)[0]
         svm_prediction = svm_model.predict(input_data)[0]
-        
-        st.write("### Resultados de Predicción")
+
+        # Mostrar resultados
+        st.subheader("Resultados de Predicción")
         st.write(f"**Decision Tree Prediction:** {dt_prediction}")
         st.write(f"**SVM Prediction:** {svm_prediction}")
-else:
-    st.warning("Los modelos no fueron cargados correctamente.")
+    else:
+        st.warning("Los modelos no fueron cargados correctamente.")
